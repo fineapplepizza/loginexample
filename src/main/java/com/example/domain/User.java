@@ -36,7 +36,7 @@ public class User implements UserDetails { // UserDetails를 상속받아 인증
 
     @Override //권한 반환
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Arrays.asList(new SimpleGrantedAuthority("user"));
+        return List.of(new SimpleGrantedAuthority("user"));
     }
 
     // 사용자의 id를 반환(고유한 값)

@@ -4,8 +4,12 @@ import com.example.service.UserDetailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
@@ -38,7 +42,24 @@ public class WebSecurityConfig {
                                 .invalidateHttpSession(true)
                 )
                 .csrf((csrfConfig) ->
-                        csrfConfig.disable())
+                        csrfConfig.disable()) // 6csrf 비활성화
                 .build();
+    }
+
+    // 7 인증 관리자 관련 설정
+    @Bean
+    public DaoAuthenticationProvider daoAuthenticationProvider() throws Exception {
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+
+        daoAuthenticationProvider.setUserDetailsService(userService);
+        daoAuthenticationProvider.setPasswordEncoder(bCryptPasswordEncoder());
+
+        return daoAuthenticationProvider;
+    }
+
+    // 8 패스워드 인코더로 사용할 빈 등록
+    @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder(){
+        return new BCryptPasswordEncoder();
     }
 }
